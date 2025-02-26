@@ -11,7 +11,7 @@ PRODUCT_NAME = "Zap"
 ENGAGEMENT_NAME = "ZapScan"
 DIRECTORY_TO_WATCH = "./"
 TIMEOUT = 30  # Timeout in seconds
-URL="" #DD_URL
+URL = ""  DD_URL
 
 class Watcher:
     def __init__(self, directory_to_watch):
@@ -21,6 +21,10 @@ class Watcher:
         self.timer_active = False
 
     def run(self):
+        # Process existing XML files first
+        print("Checking for existing XML files...")
+        self.process_existing_files()
+        
         event_handler = Handler(self)
         self.observer.schedule(event_handler, self.directory_to_watch, recursive=False)
         self.observer.start()
@@ -36,6 +40,13 @@ class Watcher:
             self.observer.stop()
         self.observer.join()
 
+    def process_existing_files(self):
+        for filename in os.listdir(self.directory_to_watch):
+            if filename.endswith(".xml"):
+                file_path = os.path.join(self.directory_to_watch, filename)
+                print(f"Found existing XML file: {file_path}")
+                upload_and_delete_file(file_path, self)
+    
     def start_timer(self):
         print(f"Starting/Resetting timer for {TIMEOUT} seconds")
         if self.timer:
@@ -108,3 +119,5 @@ def upload_and_delete_file(file_path, watcher):
 if __name__ == "__main__":
     watcher = Watcher(DIRECTORY_TO_WATCH)
     watcher.run()
+
+
