@@ -31,7 +31,7 @@ This Python script watches a directory for new OWASP ZAP or Burp Suite XML repor
 
 To run the script, execute:
 ```sh
-python watcher.py
+python main.py
 ```
 
 ## Example Usage
